@@ -1,0 +1,18 @@
+Django==2.2.9
+djangorestframework==3.11.0
+django-cors-headers==3.2.1
+django-autoslug==1.9.6
+python-decouple==3.3
+
+# Coding standards
+flake8==3.7.9
+isort==4.3.21
+
+# Imaging Library
+Pillow==6.2.1
+
+#db
+psycopg2==2.8.4
+
+#debugger
+bpython==0.17
