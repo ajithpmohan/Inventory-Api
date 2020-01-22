@@ -89,15 +89,14 @@ class RequestedItem(models.Model):
     ]
 
     product = models.ForeignKey(
-        'catalogue.Product', _('Requested Product'), related_name='%(class)ss', related_query_name='requested_item',
-        help_text=_('The requested product.')
+        'catalogue.Product', related_name='%(class)ss', related_query_name='requested_item', on_delete=models.CASCADE
     )
     user = models.ForeignKey(
         'auth.User', _('Requested By'), related_name='%(class)ss', related_query_name='requested_item',
         help_text=_('The user who requested the product.')
     )
-    qty = models.PositiveSmallIntegerField(_('Requested Stock'), validators=[MinValueValidator(1)])
-    timestamp = models.DateTimeField(_('Requested Date'), auto_now_add=True)
+    qty = models.PositiveSmallIntegerField(_('Stock Needed'), validators=[MinValueValidator(1)])
+    timestamp = models.DateTimeField(_('Date Created'), auto_now_add=True)
     status = models.CharField(_('Status'), max_length=1, default=PENDING, choices=STATUS_CHOICES)
     summary = models.TextField(blank=True)
 
@@ -117,15 +116,14 @@ class IssuedItem(models.Model):
     """
 
     product = models.ForeignKey(
-        'catalogue.Product', _('Issued Product'), related_name='%(class)ss', related_query_name='issued_item',
-        help_text=_('The issued product.')
+        'catalogue.Product', related_name='%(class)ss', related_query_name='issued_item', on_delete=models.CASCADE
     )
     user = models.ForeignKey(
         'auth.User', _('Issued To'), related_name='%(class)ss', related_query_name='issued_item',
         help_text=_('The user in which product is issued.')
     )
-    qty = models.PositiveSmallIntegerField(_('Issued Stock'), validators=[MinValueValidator(1)])
-    timestamp = models.DateTimeField(_('Issued Date'), auto_now_add=True)
+    qty = models.PositiveSmallIntegerField(_('Stock Issued'), validators=[MinValueValidator(1)])
+    timestamp = models.DateTimeField(_('Date Created'), auto_now_add=True)
     summary = models.TextField(blank=True)
 
     class Meta:
