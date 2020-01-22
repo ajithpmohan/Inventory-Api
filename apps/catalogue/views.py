@@ -1,3 +1,22 @@
-from django.shortcuts import render
+from __future__ import unicode_literals
 
-# Create your views here.
+from rest_framework import viewsets
+
+from apps.catalogue import serializers as catalogue_serializers
+from apps.catalogue.models import Category, Product
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing category instances.
+    """
+    serializer_class = catalogue_serializers.CategorySerializer
+    queryset = Category.objects.all()
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing product instances.
+    """
+    serializer_class = catalogue_serializers.ProductSerializer
+    queryset = Product.objects.all()

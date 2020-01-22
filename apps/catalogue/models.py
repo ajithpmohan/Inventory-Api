@@ -57,9 +57,9 @@ class ProductStock(models.Model):
     product = models.OneToOneField(
         'catalogue.Product', _('Product'), related_name='stock', related_query_name='stock',
     )
-    qty = models.PositiveSmallIntegerField(_('Quantity'), default=0)  # Values from 0 to 32767
-    stock_limit = models.PositiveSmallIntegerField(
-        _('Stock Limit'), default=1, validators=[MinValueValidator(1)],
+    qty = models.PositiveSmallIntegerField(_('Stock Quantity'))  # Values from 0 to 32767
+    limit = models.PositiveSmallIntegerField(
+        _('Stock Limit'), validators=[MinValueValidator(1)],
         help_text=_('Admin get notification when stock quantity value is less than stock limit value.')
     )
 
