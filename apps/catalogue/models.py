@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from autoslug import AutoSlugField
+from django.contrib import messages
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -49,8 +50,11 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    # def get_absolute_url(self):
-    #     return reverse("products:product-detail", kwargs={"slug": self.slug})
+    # stock level limit notification
+    def stock_limit_notif(self, request):
+        if self.stock.qty < self.stock.limit:
+            messages.error(request, 'Update stock of {}. Stock quantity is less than stock limit level.'.format(self))
+        return
 
 
 class ProductStock(models.Model):

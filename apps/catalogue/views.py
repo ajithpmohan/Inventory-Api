@@ -49,6 +49,10 @@ class RequestItemViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
+
+                # check product stock qty and send stock limit notification to admin when it is below the limit level
+                self.get_object().product.stock_limit_notif(request)
+
                 requested_item = catalogue_serializers.RequestItemSerializer(self.get_object()).data
                 return Response(
                     {'Requested Item': requested_item, 'Related Issued Item': serializer.data},

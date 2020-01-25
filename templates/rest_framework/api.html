@@ -1,6 +1,16 @@
 {% extends "rest_framework/base.html" %}
+{% block branding %}
+  <a class='navbar-brand' rel="nofollow" href='javascript:void(0);'>
+      Inventory Management System
+  </a>
+{% endblock branding %}
+
+{% block content %}
+  {% include 'partials/messages.html' %}
+  {{ block.super }}
+{% endblock content%}
+
 {% comment %}
-    
 {% block request_forms %}
   {{ block.super }}
   {% if delete_form %}
