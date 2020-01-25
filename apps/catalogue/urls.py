@@ -11,7 +11,6 @@ Class-based views
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 """
 
-from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from apps.catalogue import views
@@ -20,9 +19,4 @@ from apps.catalogue import views
 router = DefaultRouter()
 router.register(r'category', views.CategoryViewSet)
 router.register(r'product', views.ProductViewSet)
-router.register(r'request-item', views.RequestedItemViewSet)
-
-# The API URLs are now determined automatically by the router.
-urlpatterns = [
-    path('', include(router.urls)),
-]
+router.register(r'request-item', views.RequestItemViewSet)

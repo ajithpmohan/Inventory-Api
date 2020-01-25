@@ -73,7 +73,7 @@ class ProductStock(models.Model):
         return '%s - %d qty' % (self.product.name, self.qty)
 
 
-class RequestedItem(models.Model):
+class RequestItem(models.Model):
     """
     Requested Product Catalogue
     """
@@ -89,10 +89,10 @@ class RequestedItem(models.Model):
     ]
 
     product = models.ForeignKey(
-        'catalogue.Product', related_name='%(class)ss', related_query_name='requested_item', on_delete=models.CASCADE
+        'catalogue.Product', related_name='%(class)ss', related_query_name='request_item', on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        'auth.User', _('Requested By'), related_name='%(class)ss', related_query_name='requested_item',
+        'auth.User', _('Requested By'), related_name='%(class)ss', related_query_name='request_item',
         help_text=_('The user who requested the product.')
     )
     qty = models.PositiveSmallIntegerField(_('Stock Needed'), validators=[MinValueValidator(1)])
@@ -103,26 +103,28 @@ class RequestedItem(models.Model):
     class Meta:
         app_label = 'catalogue'
         ordering = ['-timestamp']
-        verbose_name = _('RequestedItem')
-        verbose_name_plural = _('RequestedItems')
+        verbose_name = _('RequestItem')
+        verbose_name_plural = _('RequestItems')
 
     def __str__(self):
         return '%s requested %d quantity of %s' % (self.user.username, self.qty, self.product.name)
 
 
-class IssuedItem(models.Model):
+class IssueItem(models.Model):
     """
     Issued Product Catalogue
     """
-
+    requested_item = models.OneToOneField(
+        'catalogue.RequestItem', related_name='%(class)ss', related_query_name='issue_item', on_delete=models.CASCADE
+    )
     product = models.ForeignKey(
-        'catalogue.Product', related_name='%(class)ss', related_query_name='issued_item', on_delete=models.CASCADE
+        'catalogue.Product', related_name='%(class)ss', related_query_name='issue_item', on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        'auth.User', _('Issued To'), related_name='%(class)ss', related_query_name='issued_item',
+        'auth.User', _('Issued To'), related_name='%(class)ss', related_query_name='issue_item',
         help_text=_('The user in which product is issued.')
     )
-    qty = models.PositiveSmallIntegerField(_('Stock Issued'), validators=[MinValueValidator(1)])
+    qty = models.PositiveSmallIntegerField(_('Stock'), validators=[MinValueValidator(1)])
     timestamp = models.DateTimeField(_('Date Created'), auto_now_add=True)
     summary = models.TextField(blank=True)
 
