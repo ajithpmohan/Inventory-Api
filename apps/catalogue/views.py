@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from rest_framework import status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -14,6 +14,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """
     serializer_class = catalogue_serializers.CategorySerializer
     queryset = catalogue_models.Category.objects.all()
+    permission_classes = [permissions.IsAdminUser]
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -22,6 +23,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     serializer_class = catalogue_serializers.ProductSerializer
     queryset = catalogue_models.Product.objects.all()
+    permission_classes = [permissions.IsAdminUser]
 
 
 class RequestItemViewSet(viewsets.ModelViewSet):
@@ -30,6 +32,7 @@ class RequestItemViewSet(viewsets.ModelViewSet):
     """
     # serializer_class = catalogue_serializers.RequestItemSerializer
     queryset = catalogue_models.RequestItem.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action == 'issueitem':

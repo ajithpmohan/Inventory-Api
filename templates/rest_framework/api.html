@@ -1,4 +1,6 @@
 {% extends "rest_framework/base.html" %}
+{% load custom_tags%}
+
 {% block branding %}
   <a class='navbar-brand' rel="nofollow" href='javascript:void(0);'>
       Inventory Management System
@@ -9,6 +11,15 @@
   {% include 'partials/messages.html' %}
   {{ block.super }}
 {% endblock content%}
+
+{% block userlinks %}
+  {% if user.is_authenticated %}
+    {% optional_app_logout request user %}
+  {% else %}
+    {% optional_app_login request %}
+    {% optional_app_register request %}
+  {% endif %}
+{% endblock %}
 
 {% comment %}
 {% block request_forms %}
