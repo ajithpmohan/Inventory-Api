@@ -1,7 +1,8 @@
 Django==2.2.9
-djangorestframework==3.9.0
+djangorestframework==3.11.0
 django-cors-headers==3.2.1
-django-rest-registration==0.5.3
+# django-rest-registration==0.5.3
+git+https://github.com/ajithpmohan/django-rest-registration.git@master
 django-autoslug==1.9.6
 python-decouple==3.3
 

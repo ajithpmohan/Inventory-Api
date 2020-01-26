@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions as perms
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.accounts import permissions as cust_perms
 from apps.catalogue import models as catalogue_models
 from apps.catalogue import serializers as catalogue_serializers
 
@@ -14,7 +16,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """
     serializer_class = catalogue_serializers.CategorySerializer
     queryset = catalogue_models.Category.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+
+    ''' Admin has full access or non-staff users can have read-only access'''
+    permission_classes = [perms.IsAdminUser | cust_perms.IsNotAdminUserReadOnly]
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -23,7 +27,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     serializer_class = catalogue_serializers.ProductSerializer
     queryset = catalogue_models.Product.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+
+    ''' Admin has full access or non-staff users can have read-only access'''
+    permission_classes = [perms.IsAdminUser | cust_perms.IsNotAdminUserReadOnly]
 
 
 class RequestItemViewSet(viewsets.ModelViewSet):
@@ -32,7 +38,9 @@ class RequestItemViewSet(viewsets.ModelViewSet):
     """
     # serializer_class = catalogue_serializers.RequestItemSerializer
     queryset = catalogue_models.RequestItem.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+
+    ''' Admin has read-only access or non-staff users can have full access'''
+    permission_classes = [cust_perms.IsNotAdminUser | cust_perms.IsAdminUserReadOnly]
 
     def get_serializer_class(self):
         if self.action == 'issueitem':
@@ -46,7 +54,9 @@ class RequestItemViewSet(viewsets.ModelViewSet):
             kwargs['requested_item'] = self.get_object()
         return kwargs
 
-    @action(detail=True, methods=['get', 'post'])
+    ''' Admin has full access or non-staff users can have read-only access'''
+    @action(detail=True, methods=['get', 'post'], permission_classes=(
+        perms.IsAdminUser | cust_perms.IsNotAdminUserReadOnly,))
     def issueitem(self, request, pk=None):
         if request.POST:
             serializer = self.get_serializer(data=request.data)
