@@ -36,7 +36,6 @@ class RequestItemViewSet(viewsets.ModelViewSet):
     """
     A viewset for requesting product instances.
     """
-    # serializer_class = catalogue_serializers.RequestItemSerializer
     queryset = catalogue_models.RequestItem.objects.all()
 
     ''' Admin has read-only access or non-staff users can have full access'''
@@ -77,7 +76,7 @@ class RequestItemViewSet(viewsets.ModelViewSet):
         requested_item = catalogue_serializers.RequestItemSerializer(self.get_object()).data
 
         # Check if item is already issued
-        if hasattr(self.get_object(), 'issueitems'):
-            related_issued_item = catalogue_serializers.IssueItemSerializer(self.get_object().issueitems).data
+        if hasattr(self.get_object(), 'issueitem'):
+            related_issued_item = catalogue_serializers.IssueItemSerializer(self.get_object().issueitem).data
             return Response({'Requested Item': requested_item, 'Related Issued Item': related_issued_item})
         return Response({'Requested Item': requested_item})

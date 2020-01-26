@@ -17,13 +17,13 @@ Create a **.env** file inside **inventory_api** directory. We are using [python-
 ## Starting App
     $ docker-compose up
 
-Access it through **http://localhost:8000**
-
+Access it through **http://0.0.0.0:8000**
 
 ## Documentation
 
-
 ### API Endpoints
+
+Registration Endpoint: /api/v1/accounts/register/
 
 Login Endpoint: /api/v1/accounts/login/
 
@@ -46,7 +46,6 @@ Product Endpoints - Admin has full access or non-staff users can have read-only 
 Request Product Endpoints - Admin has read-only access or non-staff users can have full access
 
 Issue Product Endpoints - Admin has full access or non-staff users can have read-only access
-
 
 ## Code Styling
 

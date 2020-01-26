@@ -57,13 +57,14 @@ class ProductSerializer(serializers.ModelSerializer):
 class RequestItemSerializer(serializers.ModelSerializer):
 
     product_name = serializers.CharField(source='product.name', read_only=True)
-    user = serializers.CharField(source='user.username', read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    username = serializers.CharField(source='user.username', read_only=True)
     status = serializers.CharField(source='get_status_display', read_only=True)
     timestamp = serializers.DateTimeField(format='%d/%m/%Y %H:%M', read_only=True)
 
     class Meta:
         model = catalogue_models.RequestItem
-        fields = ('product', 'product_name', 'qty', 'summary', 'user', 'status', 'timestamp')
+        fields = ('product', 'product_name', 'qty', 'summary', 'user', 'username', 'status', 'timestamp')
 
     def get_status(self, obj):
         return obj.get_status_display()
@@ -80,14 +81,6 @@ class RequestItemSerializer(serializers.ModelSerializer):
         if requested_qty > stock_qty:
             raise serializers.ValidationError("{} item contain only {} stock left".format(product, stock_qty))
         return data
-
-    def create(self, validated_data):
-        validated_data['user'] = User.objects.first()
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        validated_data['user'] = User.objects.first()
-        return super().update(instance, validated_data)
 
 
 class IssueItemSerializer(serializers.ModelSerializer):
@@ -113,12 +106,12 @@ class IssueItemSerializer(serializers.ModelSerializer):
         issue_stock_qty = data['qty']
 
         # Check if item is already issued
-        if hasattr(requested_item, 'issueitems'):
+        if hasattr(requested_item, 'issueitem'):
             raise serializers.ValidationError("{} is already issued".format(product))
 
         # Check the product stock quantity
         if not product_stock_qty:
-            raise serializers.ValidationError("{} stock is empty. Refill it".format(product))
+            raise serializers.ValidationError("{} stock is empty. Update the stock".format(product))
 
         # Item can't be issued when issue stock quantity greater than product stock qty
         if issue_stock_qty > product_stock_qty:
@@ -130,15 +123,17 @@ class IssueItemSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data['user'] = User.objects.first()
+        validated_data['user'] = getattr(validated_data['requested_item'], 'user')
         validated_data['product'] = getattr(validated_data['requested_item'], 'product')
 
         with transaction.atomic():
             instance = super().create(validated_data)
+
             # Product stock get reduced after issuing
             product_stock = validated_data['product'].stock
             product_stock.qty = product_stock.qty-validated_data['qty']
             product_stock.save()
+
             # update requested item status after issuing
             validated_data['requested_item'].status = catalogue_models.RequestItem.APPROVED
             validated_data['requested_item'].save()

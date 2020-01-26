@@ -119,7 +119,7 @@ class IssueItem(models.Model):
     Issued Product Catalogue
     """
     requested_item = models.OneToOneField(
-        'catalogue.RequestItem', related_name='%(class)ss', related_query_name='issue_item', on_delete=models.CASCADE
+        'catalogue.RequestItem', related_name='%(class)s', related_query_name='issue_item', on_delete=models.CASCADE
     )
     product = models.ForeignKey(
         'catalogue.Product', related_name='%(class)ss', related_query_name='issue_item', on_delete=models.CASCADE
