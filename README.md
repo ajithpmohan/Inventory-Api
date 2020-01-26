@@ -8,11 +8,45 @@ You need **Docker Engine** and **Docker Compose**. Install it from [Docker Websi
 
 Create a **.env** file inside **inventory_api** directory. We are using [python-decouple](https://simpleisbetterthancomplex.com/2015/11/26/package-of-the-week-python-decouple.html) library for handling environment variables.
 
-## Starting App
 
+## Build the Services
+
+    $ docker-compose build
+
+
+## Starting App
     $ docker-compose up
 
 Access it through **http://localhost:8000**
+
+
+## Documentation
+
+
+### API Endpoints
+
+Login Endpoint: /api/v1/accounts/login/
+
+Logout Endpoint: /api/v1/accounts/logout/
+
+Category Endpoints: /api/v1/catalogue/category/
+
+Product Endpoints: /api/v1/catalogue/product/
+
+Request Product Endpoints: /api/v1/catalogue/request-item/
+
+Issue Product Endpoints: /api/v1/catalogue/request-item/<int:pk>/issue-item/
+
+### Role Based Perms
+
+Category Endpoints - Admin has full access or non-staff users can have read-only access
+
+Product Endpoints - Admin has full access or non-staff users can have read-only access
+
+Request Product Endpoints - Admin has read-only access or non-staff users can have full access
+
+Issue Product Endpoints - Admin has full access or non-staff users can have read-only access
+
 
 ## Code Styling
 
